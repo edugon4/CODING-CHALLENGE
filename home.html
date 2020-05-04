@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="design.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script> 
+    <script src="https://www.gstatic.com/firebase/6.2.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebase/6.2.0/firebase-firestore.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCl-HeUleftmFg4-0L5k2QkdqOfyyPfiak",
+            authDomain: "intento-coin.firebaseapp.com",
+            databaseURL: "https://intento-coin.firebaseio.com",
+            projectId: "intento-coin",
+            storageBucket: "intento-coin.appspot.com",
+            messagingSenderId: "196381516419",
+            appId: "1:196381516419:web:2f8244fca775cc00fe71b6",
+            measurementId: "G-6Y788B6SKX"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        var userID = document.getElementById('direccion');
+
+        function Inicial() {
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+
+                    var email = user.email;
+
+                    userID.textContent = email;
+                }
+
+            });
+        }
+
+        window.onload = function () {
+            Inicial();
+        }
+
+    </script>
+
+
+</head>
+
+<body>
+
+
+    <input type="checkbox" id="check">
+    <label for="check">
+        <i class="fas fa-bars" id="btn"></i>
+        <i class="fas fa-times" id="cancel"></i>
+    </label>
+    <div class="sidebar">
+
+        <header id="direccion"></header>
+        <ul>
+            <li><a href="#"><i class="fas fa-folder-open" onclick="archivos();return false;"></i>Archivos</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i>Configuracion</a></li>
+            <li onclick="cerrar()"><a href="#"><i class="fas fa-sign-out-alt"></i>Salir</a></li>
+
+        </ul>
+
+    </div>
+
+    <div class="btn">
+
+        <button class="btn btn-dark my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal">Subir Archivo</button>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">SUBIR ARCHIVO</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <progress value="0" max="100" id="uploader">0%</progress>
+                    <div class="mt-2"></div>
+                    <input type="file" value="upload" id="fileButton" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div id="area">
+
+    </div>
+
+    <script src="script.js"></script>
+
+
+</body>
+
+<script type="text/javascript">
+    function archivos() {
+
+        document.getElementById('area').innerHTML = `
+        <h4>Bienvenido **************************************************************!</h4> 
+
+        `;
+    }
+
+    var uploader = document.getElementById('uploader');
+    var fileButton = document.getElementById('fileButton');
+
+    // Vigilar selección archivo
+    fileButton.addEventListener('change', function (e) {
+        //Obtener archivo
+        var file = e.target.files[0];
+
+        // Crear un storage ref
+        var storageRef = firebase.storage().ref('mis_archivos/' + file.name);
+
+
+        // Subir archivo
+        var task = storageRef.put(file);
+
+        // Actualizar barra progreso
+        task.on('state_changed',
+
+            function progress(snapshot) {
+                var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                uploader.value = percentage;
+            },
+
+            function error(err) {
+
+            },
+
+
+            function complete() {
+
+
+            }
+
+
+
+
+
+        )
+
+
+
+
+
+    });
+
+
+
+</script>
+
+</html>
