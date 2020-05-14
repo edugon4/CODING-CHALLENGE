@@ -46,7 +46,10 @@ function observador (){
           var photoURL = user.photoURL;
           var isAnonymous = user.isAnonymous;
           var uid = user.uid;
-          var providerData = user.providerData;
+          var providerData = user.providerData;  
+
+          var correo = document.getElementById('email')
+          correo.innerHTML= `user.email`;
           // ...
         } else {
           // User is signed out.
@@ -68,7 +71,7 @@ function aparece (user){
     <p>Bienvenido!</p>
     <button onclick="cerrar()">Cerrar Sesion</button>  
      `; 
-    window.open('home.html');
+    window.open('LandingPage.html');
     } 
 
 }   
@@ -105,20 +108,15 @@ function verificar () {
     // An error happened.
     });
 
-} 
+}  
 
-firebase.initializeApp({
-    apiKey: "AIzaSyCl-HeUleftmFg4-0L5k2QkdqOfyyPfiak",
-    authDomain: "intento-coin.firebaseapp.com",
-    projectId: "intento-coin",
+// firebase.initializeApp({
+//     apiKey: "AIzaSyCl-HeUleftmFg4-0L5k2QkdqOfyyPfiak",
+//     authDomain: "intento-coin.firebaseapp.com",
+//     projectId: "intento-coin", 
+   
   
-}); 
+// }); 
 
-var db = firebase.firestone(); 
 
-//leer 
-db.collection("archivos").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-    });
-});
+ 

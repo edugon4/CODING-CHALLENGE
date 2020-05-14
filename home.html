@@ -18,12 +18,26 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
     <script src="https://www.gstatic.com/firebase/6.2.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebase/6.2.0/firebase-firestore.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("area").hide();
+            $("#show").click(function () {
+                $("area").show();
+            });
+        });
+    </script>
+
 
     <script>
         // Your web app's Firebase configuration
@@ -41,6 +55,8 @@
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
 
+
+
         var userID = document.getElementById('direccion');
 
         function Inicial() {
@@ -55,11 +71,54 @@
             });
         }
 
+        function showFile(input) {
+            let file = input.files[0];
+
+            // alert(`File name: ${file.name}`); // e.g my.png
+            // alert(`Last modified: ${file.lastModified}`); // e.g 1552830408824 
+
+            var tipo = file.name;
+
+            var final = tipo.substr(tipo.lastIndexOf('.') + 1);
+
+            document.getElementById('t1').value = final;
+
+            var nombre = tipo.substr(0, tipo.indexOf('.'));
+
+            document.getElementById('n1').value = nombre;
+        }
+
         window.onload = function () {
             Inicial();
         }
 
+        var db = firebase.firestore();
+
+        function guardar() {
+
+            var nombre = document.getElementById('n1').value;
+            var tipo = document.getElementById('t1').value;
+
+            db.collection("archivos").add({
+                Nombre: nombre,
+                Tipo: tipo,
+            })
+                .then(function (docRef) {
+                    console.log("Document written with ID: ", docRef.id);
+                    document.getElementById('n1').value = '';
+                    document.getElementById('t1').value = '';
+                })
+                .catch(function (error) {
+                    console.error("Error adding document: ", error);
+                });
+        }
+
+
+
+
+
     </script>
+
 
 
 </head>
@@ -76,7 +135,8 @@
 
         <header id="direccion"></header>
         <ul>
-            <li><a href="#"><i class="fas fa-folder-open" onclick="archivos();return false;"></i>Archivos</a></li>
+
+            <li><a href="home.html"><i class="fas fa-folder-open"></i>Archivos</a></li>
             <li><a href="#"><i class="fas fa-cog"></i>Configuracion</a></li>
             <li onclick="cerrar()"><a href="#"><i class="fas fa-sign-out-alt"></i>Salir</a></li>
 
@@ -84,11 +144,63 @@
 
     </div>
 
-    <div class="btn">
+    <!-- onclick="archivos();return false; -->
 
-        <button class="btn btn-dark my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal">Subir Archivo</button>
+    <div class="Element row">
+
+        <div class="Element col-sm-4"></div>
+
+        <div class="Element col-sm-4"></div>
+
+        <div class="Element col-sm-4">
+
+            <button class="btn btn-dark my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal">Subir
+                Archivo</button>
+
+        </div>
 
     </div>
+
+
+
+    <div class="col-xs-11 panel panel-primary" style="margin: 200px;">
+
+        <div class="panel-heading">
+            <div class="row">
+                <div class="TittleColor col-sm-12"><b></b></div>
+            </div>
+        </div>
+        <div class="panel-body">
+
+
+            <label for="nombre">Nombre de Archivo</label><input type="text" name="nombre" id="nombre">
+            <br>
+            <label for="tipo">Tipo</label><input type="text" name="tipo" id="tipo" readonly>
+
+            <button class="btn btn-primary" id="boton">Guardar Cambios</button> 
+
+            <br>
+
+            <table class="table my-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Eliminar</th>
+                        <th scope="col">Editar</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla">
+                </tbody>
+            </table>
+
+        </div>
+
+
+
+    </div>
+
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -104,10 +216,18 @@
                 <div class="modal-body">
                     <progress value="0" max="100" id="uploader">0%</progress>
                     <div class="mt-2"></div>
-                    <input type="file" value="upload" id="fileButton" />
+                    <input type="file" value="upload" id="fileButton" onchange="showFile(this)" />
+                    <br>
+                    <br>
+                    <label for="n1">Nombre de Archivo</label><input type="text" name="n1" id="n1">
+                    <br>
+                    <label for="t1">Tipo</label><input type="text" name="t1" id="t1" readonly>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardar()"
+                        data-dismiss="modal">Subir</button>
 
                 </div>
             </div>
@@ -118,27 +238,125 @@
 
 
 
+    <script>
+        var tabla = document.getElementById('tabla');
+        db.collection("archivos").onSnapshot((querySnapshot) => {
+            tabla.innerHTML = '';
+            querySnapshot.forEach((doc) => {
+                console.log(`${doc.id} => ${doc.data().Nombre}`);
+                tabla.innerHTML += `
+            <tr>
+            <th scope="row">${doc.id}</th>
+            <td>${doc.data().Nombre}</td>
+            <td>${doc.data().Tipo}</td>
+            <td><button class="btn btn-danger" onclick="eliminar('${doc.id}')">Eliminar</button></td>
+            <td><button class="btn btn-warning" id="edit" onclick="editar('${doc.id}','${doc.data().Nombre}','${doc.data().Tipo}')">Editar</button></td>
+            </tr>
+            `
+            });
+        });
 
-    <div id="area">
+        function eliminar(id) {
+            db.collection("archivos").doc(id).delete().then(function () {
+                console.log("Document successfully deleted!");
+            }).catch(function (error) {
+                console.error("Error removing document: ", error);
+            });
+        }
 
+        function editar(id, Nombre, Tipo) {
+
+
+            document.getElementById('nombre').value = Nombre;
+            document.getElementById('tipo').value = Tipo;
+            var boton = document.getElementById('boton');
+
+            boton.onclick = function () {
+                var washingtonRef = db.collection("archivos").doc(id);
+                // Set the "capital" field of the city 'DC'
+
+                var nombre = document.getElementById('nombre').value;
+                var tipo = document.getElementById('tipo').value;
+
+                return washingtonRef.update({
+                    Nombre: nombre,
+                    Tipo: tipo,
+                })
+                    .then(function () {
+                        console.log("Document successfully updated!");
+                        document.getElementById('nombre').value = '';
+                        document.getElementById('tipo').value = '';
+
+                    })
+                    .catch(function (error) {
+                        // The document probably doesn't exist.
+                        console.error("Error updating document: ", error);
+                    });
+            }
+        }
+
+    </script>
+
+
+    <div class="modal fade" id="myModalExito" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">ARCHIVO</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="nombre">Nombre de Archivo</label><input type="text" name="nombre" id="nombre">
+                    <br>
+                    <label for="tipo">Tipo</label><input type="text" name="tipo" id="tipo" readonly>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="boton" name="boton"
+                        data-dismiss="modal">Editar</button>
+
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+
+
+    <div id="area">
+        <button> +</button>
+        <button> -</button>
+    </div>
+
+
 
 
 </body>
 
+
 <script type="text/javascript">
-    function archivos() {
+    // function archivos() {
 
-        document.getElementById('area').innerHTML = `
-        <h4>Bienvenido **************************************************************!</h4> 
+    //     document.getElementById('area').innerHTML = ` 
+    //     <div class="panel-body"> 
+    //     <div class="Element col-sm-12"> 
+    //     <div class="Element col-sm-4"></div> 
+    //     <div class="Element col-sm-8"> 
+    //     <h4>Bienvenido **************************************************************!</h4>  
+    //     </div> 
+    //     </div> 
+    //     </div> 
+    //     `;
+    // } 
 
-        `;
-    }
 
     var uploader = document.getElementById('uploader');
     var fileButton = document.getElementById('fileButton');
+
+
 
     // Vigilar selección archivo
     fileButton.addEventListener('change', function (e) {
@@ -147,7 +365,6 @@
 
         // Crear un storage ref
         var storageRef = firebase.storage().ref('mis_archivos/' + file.name);
-
 
         // Subir archivo
         var task = storageRef.put(file);
@@ -175,6 +392,27 @@
 
 
         )
+
+
+        // function readFile(input) {
+        //     let file = input.files[0];
+
+        //     let reader = new FileReader();
+
+        //     reader.readAsText(file);
+
+        //     reader.onload = function () {
+        //         console.log(reader.result);
+        //     };
+
+        //     reader.onerror = function () {
+        //         console.log(reader.error);
+        //     };
+
+        // } 
+
+
+
 
 
 

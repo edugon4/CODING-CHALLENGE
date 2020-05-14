@@ -88,4 +88,9 @@
 
   align-content: center;
 
+} 
+
+.p {
+  border: black 2px solid;
+  margin: 20px;
 }
