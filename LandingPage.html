@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title> 
+
+
+    <link rel="stylesheet" href="design.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script> 
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebase/6.2.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebase/6.2.0/firebase-firestore.js"></script>  
+    <script src="script.js"></script>
+
+
+    <script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyCl-HeUleftmFg4-0L5k2QkdqOfyyPfiak",
+        authDomain: "intento-coin.firebaseapp.com",
+        databaseURL: "https://intento-coin.firebaseio.com",
+        projectId: "intento-coin",
+        storageBucket: "intento-coin.appspot.com",
+        messagingSenderId: "196381516419",
+        appId: "1:196381516419:web:2f8244fca775cc00fe71b6",
+        measurementId: "G-6Y788B6SKX"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    var userID = document.getElementById('direccion');
+
+    function Inicial() {
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+
+                var email = user.email;
+
+                userID.textContent = email; 
+
+                var correo = document.getElementById('email')
+                correo.innerHTML= `user.email`;
+            }
+
+        });
+    } 
+
+</script>
+
+
+
+</head>
+<body> 
+
+    
+    <input type="checkbox" id="check">
+    <label for="check">
+        <i class="fas fa-bars" id="btn"></i>
+        <i class="fas fa-times" id="cancel"></i>
+    </label>
+    <div class="sidebar">
+
+        <header id="direccion"></header>
+        <ul> 
+            <li id="email"><a href="#"></a> </li>
+            <li><a href="home.html"><i class="fas fa-folder-open"></i>Archivos</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i>Configuracion</a></li>
+            <li onclick="cerrar()"><a href="#"><i class="fas fa-sign-out-alt"></i>Salir</a></li>
+
+        </ul>
+
+    </div>
+    
+    <div id="lp">
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
